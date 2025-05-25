@@ -1,0 +1,63 @@
+name: Build with CMake on Linux and Windows
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: # чтобы можно было запускать вручную
+
+jobs:
+  build-linux-gcc:
+    runs-on: ubuntu-latest
+    name: Linux GCC Build
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Установка зависимостей
+        run: |
+          sudo apt update
+          sudo apt install -y cmake g++ make
+
+      - name: Сборка через CMake
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make
+
+  build-linux-clang:
+    runs-on: ubuntu-latest
+    name: Linux Clang Build
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Установка зависимостей
+        run: |
+          sudo apt update
+          sudo apt install -y cmake clang make
+
+      - name: Сборка через CMake с Clang
+        run: |
+          mkdir build
+          cd build
+          cmake -DCMAKE_CXX_COMPILER=clang++ ..
+          make
+
+  build-windows-msvc:
+    runs-on: windows-latest
+    name: Windows MSVC Build
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Сборка через CMake (MSVC)
+        run: |
+          mkdir build
+          cd build
+          cmake -G "Visual Studio 17 2022" ..
+          cmake --build .
