@@ -1,5 +1,3 @@
-# .github/workflows/cmake.yml
-
 name: Build with CMake on Linux and Windows
 
 on:
