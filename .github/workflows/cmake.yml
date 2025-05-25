@@ -1,32 +1,63 @@
-name: GitHub Actions
-on: [push]
+# .github/workflows/cmake.yml
+
+name: Build with CMake on Linux and Windows
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
 jobs:
-  run_on_Linux:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v4
-        - run: |
-               cmake -H. -B_build
-               cmake --build _build
+  build-linux-gcc:
+    runs-on: ubuntu-latest
+    name: Linux GCC Build
 
-        - name: Configure and Build Project
-          uses: threeal/cmake-action@v1.3.0
+    steps:
+      - uses: actions/checkout@v3
 
-  run_on_Windows:
-        runs-on: windows-latest
-        steps:
-          - name: Checkout
-            uses: actions/checkout@v4
+      - name: Установка зависимостей
+        run: |
+          sudo apt update
+          sudo apt install -y cmake g++ make
 
-          - name: Set up MSBuild
-            uses: microsoft/setup-msbuild@v1.0.2
+      - name: Сборка проекта
+        run: |
+          mkdir build && cd build
+          cmake ..
+          make
 
-          - run: |
-              mkdir _build
-              cd _build
-              cmake ..
-              cmake --build .
+  build-linux-clang:
+    runs-on: ubuntu-latest
+    name: Linux Clang Build
 
-          - name: Configure and Build Project
-            uses: threeal/cmake-action@v1.3.0
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Установка зависимостей
+        run: |
+          sudo apt update
+          sudo apt install -y cmake clang make
+
+      - name: Сборка проекта
+        run: |
+          mkdir build && cd build
+          cmake -DCMAKE_CXX_COMPILER=clang++ ..
+          make
+
+  build-windows-msvc:
+    runs-on: windows-latest
+    name: Windows MSVC Build
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Сборка через CMake
+        run: |
+          mkdir build
+          cd build
+          cmake -G "Visual Studio 17 2022" ..
+          cmake --build .
