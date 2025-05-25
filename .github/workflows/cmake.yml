@@ -1,63 +1,32 @@
-name: Build with CMake on Linux and Windows
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch: # чтобы можно было запускать вручную
-
+name: GitHub Actions
+on: [push]
 jobs:
-  build-linux-gcc:
-    runs-on: ubuntu-latest
-    name: Linux GCC Build
+  run_on_Linux:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+        - run: |
+               cmake -H. -B_build
+               cmake --build _build
 
-    steps:
-      - uses: actions/checkout@v3
+        - name: Configure and Build Project
+          uses: threeal/cmake-action@v1.3.0
 
-      - name: Установка зависимостей
-        run: |
-          sudo apt update
-          sudo apt install -y cmake g++ make
+  run_on_Windows:
+        runs-on: windows-latest
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v4
 
-      - name: Сборка через CMake
-        run: |
-          mkdir build
-          cd build
-          cmake ..
-          make
+          - name: Set up MSBuild
+            uses: microsoft/setup-msbuild@v1.0.2
 
-  build-linux-clang:
-    runs-on: ubuntu-latest
-    name: Linux Clang Build
+          - run: |
+              mkdir _build
+              cd _build
+              cmake ..
+              cmake --build .
 
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Установка зависимостей
-        run: |
-          sudo apt update
-          sudo apt install -y cmake clang make
-
-      - name: Сборка через CMake с Clang
-        run: |
-          mkdir build
-          cd build
-          cmake -DCMAKE_CXX_COMPILER=clang++ ..
-          make
-
-  build-windows-msvc:
-    runs-on: windows-latest
-    name: Windows MSVC Build
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Сборка через CMake (MSVC)
-        run: |
-          mkdir build
-          cd build
-          cmake -G "Visual Studio 17 2022" ..
-          cmake --build .
+          - name: Configure and Build Project
+            uses: threeal/cmake-action@v1.3.0
