@@ -1,4 +1,4 @@
-name: Build with CMake on Linux and Windows
+name: Build with CMake on Kali Linux and Windows
 
 on:
   push:
@@ -10,17 +10,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-linux-gcc:
+  build-kali-gcc:
     runs-on: ubuntu-latest
-    name: Linux GCC Build
+    container: kalilinux/kali-rolling
+    name: Kali Linux GCC Build
 
     steps:
       - uses: actions/checkout@v3
 
       - name: Установка зависимостей
         run: |
-          sudo apt update
-          sudo apt install -y cmake g++ make
+          apt update
+          apt install -y cmake g++ make build-essential
 
       - name: Сборка проекта
         run: |
@@ -28,17 +29,18 @@ jobs:
           cmake ..
           make
 
-  build-linux-clang:
+  build-kali-clang:
     runs-on: ubuntu-latest
-    name: Linux Clang Build
+    container: kalilinux/kali-rolling
+    name: Kali Linux Clang Build
 
     steps:
       - uses: actions/checkout@v3
 
       - name: Установка зависимостей
         run: |
-          sudo apt update
-          sudo apt install -y cmake clang make
+          apt update
+          apt install -y cmake clang make build-essential
 
       - name: Сборка проекта
         run: |
