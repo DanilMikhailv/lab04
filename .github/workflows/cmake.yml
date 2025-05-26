@@ -1,63 +1,47 @@
-name: Build with CMake on Kali Linux and Windows
+name: GitHub Actions on Kali Linux
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch:
+on: [push]
 
 jobs:
-  build-kali-gcc:
+  run_on_kali:
     runs-on: ubuntu-latest
     container: kalilinux/kali-rolling
-    name: Kali Linux GCC Build
-
+    name: Build on Kali Linux
+    
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Установка зависимостей
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Install dependencies
         run: |
-          apt update
-          apt install -y cmake g++ make build-essential
-
-      - name: Сборка проекта
+          apt update -y
+          apt install -y cmake build-essential git
+      
+      - name: Configure and build
         run: |
-          mkdir build && cd build
-          cmake ..
-          make
+          cmake -H. -B_build
+          cmake --build _build
+      
+      - name: CMake Action
+        uses: threeal/cmake-action@v1.3.0
 
-  build-kali-clang:
-    runs-on: ubuntu-latest
-    container: kalilinux/kali-rolling
-    name: Kali Linux Clang Build
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Установка зависимостей
-        run: |
-          apt update
-          apt install -y cmake clang make build-essential
-
-      - name: Сборка проекта
-        run: |
-          mkdir build && cd build
-          cmake -DCMAKE_CXX_COMPILER=clang++ ..
-          make
-
-  build-windows-msvc:
+  run_on_windows:
     runs-on: windows-latest
-    name: Windows MSVC Build
-
+    name: Build on Windows
+    
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Сборка через CMake
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v1.0.2
+      
+      - name: Configure and build
         run: |
-          mkdir build
-          cd build
-          cmake -G "Visual Studio 17 2022" ..
+          mkdir _build
+          cd _build
+          cmake ..
           cmake --build .
+      
+      - name: CMake Action
+        uses: threeal/cmake-action@v1.3.0
