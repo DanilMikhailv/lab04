@@ -1,16 +1,8 @@
-# solver_lib/CMakeLists.txt
-
 cmake_minimum_required(VERSION 3.10)
-project(solver_lib)
+project (solver)
 
-# Создаем статическую библиотеку из solver.cpp
-add_library(solver STATIC
-    solver.cpp
-)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Указываем, где искать заголовочные файлы
-target_include_directories(solver PUBLIC ${PROJECT_SOURCE_DIR})
-
-# Опционально: установка
-install(TARGETS solver ARCHIVE DESTINATION lib)
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/ DESTINATION include/solver)
+add_library(solver STATIC solver.cpp)
+target_include_directories(solver PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

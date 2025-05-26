@@ -1,3 +1,0 @@
-/home/danil/lab03/solver_application/build/CMakeFiles/solver.dir
-/home/danil/lab03/solver_application/build/CMakeFiles/edit_cache.dir
-/home/danil/lab03/solver_application/build/CMakeFiles/rebuild_cache.dir
