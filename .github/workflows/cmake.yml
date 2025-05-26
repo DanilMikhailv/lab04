@@ -1,47 +1,33 @@
-name: GitHub Actions on Kali Linux
-
+name: GitHub Actions 
 on: [push]
-
 jobs:
-  run_on_kali:
-    runs-on: ubuntu-latest
-    container: kalilinux/kali-rolling
-    name: Build on Kali Linux
-    
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      
-      - name: Install dependencies
-        run: |
-          apt update -y
-          apt install -y cmake build-essential git
-      
-      - name: Configure and build
-        run: |
-          cmake -H. -B_build
-          cmake --build _build
-      
-      - name: CMake Action
-        uses: threeal/cmake-action@v1.3.0
-
-  run_on_windows:
-    runs-on: windows-latest
-    name: Build on Windows
-    
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      
-      - name: Set up MSBuild
-        uses: microsoft/setup-msbuild@v1.0.2
-      
-      - name: Configure and build
-        run: |
-          mkdir _build
-          cd _build
-          cmake ..
-          cmake --build .
-      
-      - name: CMake Action
-        uses: threeal/cmake-action@v1.3.0
+  run_on_Linux:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+          
+        - run: |
+               cmake -H. -B_build
+               cmake --build _build
+               
+        - name: Configure and Build Project
+          uses: threeal/cmake-action@v1.3.0
+          
+  run_on_Windows:
+        runs-on: windows-latest
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v4
+            
+          - name: Set up MSBuild
+            uses: microsoft/setup-msbuild@v1.0.2
+            
+          - run: |
+              mkdir _build
+              cd _build
+              cmake ..
+              cmake --build .
+              
+          - name: Configure and Build Project
+            uses: threeal/cmake-action@v1.3.0
